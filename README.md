@@ -9,7 +9,7 @@ The primary innovation of Makan is an intelligent AI assistant designed to dynam
 ## Architecture
 
 ```text
-User Query ──▶ Next.js (Vercel) ──▶ FastAPI ──▶ RAG Pipeline ──▶ DeepSeek LLM
+User Query ──▶ Next.js  ──▶ FastAPI ──▶ RAG Pipeline ──▶ DeepSeek LLM
                                         │             │
                                         ▼             ▼
                                   PostgreSQL ◀── pgvector similarity search
