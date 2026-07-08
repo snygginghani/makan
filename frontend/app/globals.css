@@ -1,0 +1,195 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-ibm-arabic), var(--font-sans-fallback, ui-sans-serif), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-naskh), var(--font-ibm-arabic), serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* makan design system — see design-system/MASTER.md
+   Light theme (content pages) */
+:root {
+  --background: #faf7f2;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --primary: #c2410c;
+  --primary-foreground: #ffffff;
+  --secondary: #f3ede4;
+  --secondary-foreground: #44403c;
+  --muted: #f3ede4;
+  --muted-foreground: #6b6259;
+  --accent: #0d9488;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --border: rgba(28, 25, 23, 0.1);
+  --input: rgba(28, 25, 23, 0.12);
+  --ring: #c2410c;
+  --chart-1: #e2725b;
+  --chart-2: #2dd4bf;
+  --chart-3: #a78bfa;
+  --chart-4: #fbbf24;
+  --chart-5: #4ade80;
+  --radius: 1rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1c1917;
+  --sidebar-primary: #c2410c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3ede4;
+  --sidebar-accent-foreground: #44403c;
+  --sidebar-border: rgba(28, 25, 23, 0.1);
+  --sidebar-ring: #c2410c;
+  --surface-glass: rgba(255, 255, 255, 0.78);
+}
+
+/* Dark — the app's primary theme (map-first, desert night) */
+.dark {
+  --background: #0c0a09;
+  --foreground: #f5efe6;
+  --card: #171310;
+  --card-foreground: #f5efe6;
+  --popover: #1c1815;
+  --popover-foreground: #f5efe6;
+  --primary: #e2725b;
+  --primary-foreground: #1c0f0a;
+  --secondary: #262019;
+  --secondary-foreground: #d6cfc4;
+  --muted: #221d18;
+  --muted-foreground: #a89f94;
+  --accent: #2dd4bf;
+  --accent-foreground: #042f2a;
+  --destructive: #f87171;
+  --border: rgba(245, 239, 230, 0.1);
+  --input: rgba(245, 239, 230, 0.14);
+  --ring: #e2725b;
+  --chart-1: #e2725b;
+  --chart-2: #2dd4bf;
+  --chart-3: #a78bfa;
+  --chart-4: #fbbf24;
+  --chart-5: #4ade80;
+  --sidebar: #171310;
+  --sidebar-foreground: #f5efe6;
+  --sidebar-primary: #e2725b;
+  --sidebar-primary-foreground: #1c0f0a;
+  --sidebar-accent: #262019;
+  --sidebar-accent-foreground: #d6cfc4;
+  --sidebar-border: rgba(245, 239, 230, 0.1);
+  --sidebar-ring: #e2725b;
+  --surface-glass: rgba(23, 19, 16, 0.72);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    line-height: 1.7; /* Arabic text needs generous leading */
+  }
+  button:not(:disabled), [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer utilities {
+  /* Panel floating over the map */
+  .glass {
+    background: var(--surface-glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  }
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Map pin pulse for AI highlights (transform-only, GPU friendly) */
+@keyframes makan-pin-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+}
+.pin-highlight {
+  animation: makan-pin-pulse 1.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pin-highlight {
+    animation: none;
+  }
+}
+
+/* makan popup: strip library chrome, our card styles itself */
+.makan-popup .maplibregl-popup-content,
+.makan-popup .mapboxgl-popup-content {
+  background: transparent;
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.makan-popup .maplibregl-popup-tip,
+.makan-popup .mapboxgl-popup-tip {
+  border-top-color: var(--popover);
+  border-bottom-color: var(--popover);
+}
+
+/* maplibre/mapbox controls on dark theme */
+.dark .maplibregl-ctrl-attrib,
+.dark .mapboxgl-ctrl-attrib {
+  background: rgba(12, 10, 9, 0.6) !important;
+  color: #a89f94;
+}
+.dark .maplibregl-ctrl-attrib a,
+.dark .mapboxgl-ctrl-attrib a {
+  color: #a89f94;
+}
