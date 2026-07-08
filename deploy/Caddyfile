@@ -1,0 +1,11 @@
+# Caddy auto-provisions Let's Encrypt TLS once these names resolve to the droplet.
+
+nasamat.me, www.nasamat.me {
+	encode gzip zstd
+	reverse_proxy frontend:3000
+}
+
+api.nasamat.me {
+	encode gzip zstd
+	reverse_proxy backend:8000
+}

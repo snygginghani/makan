@@ -1,0 +1,56 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: makan
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: makan
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U makan -d makan"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build: ../backend
+    restart: unless-stopped
+    env_file: ../backend/.env.prod
+    volumes:
+      - media:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../frontend
+      args:
+        NEXT_PUBLIC_API_URL: https://api.nasamat.me
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: "251626058638-1sms7d16fr07nl2otfkrk8779ori5g2n.apps.googleusercontent.com"
+        NEXT_PUBLIC_MAPBOX_TOKEN: ""
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  pgdata:
+  media:
+  caddy_data:
+  caddy_config:
