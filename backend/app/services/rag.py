@@ -9,6 +9,7 @@ Anti-hallucination guarantees enforced in code (not just the prompt):
 """
 
 import logging
+import re
 from dataclasses import dataclass, field
 
 from sqlalchemy import select
@@ -80,6 +81,18 @@ _PLANNING_TERMS = (
     "route",
     "things to do",
 )
+
+
+# Strip emojis/pictographs so replies stay clean Arabic text (belt-and-braces
+# on top of the system-prompt rule).
+_EMOJI_RE = re.compile(
+    "[\U0001f000-\U0001faff\U00002600-\U000027bf\U0001f1e6-\U0001f1ff"
+    "\U00002b00-\U00002bff\U00002190-\U000021ff️‍✅❌]+"
+)
+
+
+def _no_emoji(text: str) -> str:
+    return _EMOJI_RE.sub("", text).replace("  ", " ").strip()
 
 
 @dataclass
@@ -289,7 +302,7 @@ def _compose_offline_answer(query: str, retrieved: list[RetrievedPlace]) -> dict
         if not reason:
             reason = p.description or p.name_ar
         reason = reason[:180]
-        dist = f" (يبعد حوالي {entry.distance_km:.1f} كم)" if entry.distance_km is not None else ""
+        dist = f" (على بُعد حوالي {entry.distance_km:.1f} كم)" if entry.distance_km is not None else ""
         parts.append(f"• {p.name_ar}{dist}: {reason}")
         places.append(
             {
@@ -299,7 +312,7 @@ def _compose_offline_answer(query: str, retrieved: list[RetrievedPlace]) -> dict
                 "distance_km": round(entry.distance_km, 1) if entry.distance_km is not None else None,
             }
         )
-    answer = "هذه أفضل الأماكن التي وجدتها بناءً على سؤالك:\n" + "\n".join(parts)
+    answer = "هاي أحلى أماكن لقيتها إلك:\n" + "\n".join(parts)
     return {
         "answer": answer,
         "places": places,
@@ -350,8 +363,8 @@ def _sanitize_llm_output(raw: dict, retrieved: list[RetrievedPlace]) -> AIQueryO
 
 
 NO_RESULTS_ANSWER = (
-    "لم أجد أماكن مطابقة لسؤالك ضمن قاعدة المعرفة الحالية. "
-    "جرّب توسيع نطاق البحث أو تغيير التصنيف."
+    "ما لقيت أماكن تناسب سؤالك حالياً. "
+    "جرّب توسّع دائرة البحث أو غيّر التصنيف."
 )
 
 
@@ -470,10 +483,13 @@ async def rag_query(db: AsyncSession, payload: AIQueryIn) -> AIQueryOut:
         raw = _compose_offline_answer(payload.query, retrieved)
 
     result = _sanitize_llm_output(raw, retrieved)
+    result.answer = _no_emoji(result.answer)
     result.sources = chunk_ids
     result.is_plan = bool(raw.get("is_plan"))
     result.suggestions = [
-        str(s).strip()[:80] for s in (raw.get("suggestions") or []) if str(s).strip()
+        clean
+        for s in (raw.get("suggestions") or [])
+        if (clean := _no_emoji(str(s))[:80])
     ][:4]
 
     if intent.wants_plan:

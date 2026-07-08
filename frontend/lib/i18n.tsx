@@ -356,14 +356,14 @@ export type StrKey = keyof typeof S;
 
 export const QUICK_PROMPTS: Record<Lang, string[]> = {
   ar: [
-    "رتّبلي طلعة حلوة اليوم 🗺️",
-    "وين أحلى مطل قريب مني؟",
-    "كافيه هادي للدراسة في عمان",
-    "مكان تخييم لمشاهدة النجوم",
+    "وين أقرب مطل حلو إلي؟",
+    "رتّبلي طلعة حلوة اليوم",
+    "كافيه هادي للدراسة بعمّان",
+    "مكان تخييم نشوف فيه النجوم",
   ],
   en: [
-    "Plan me a fun hangout today 🗺️",
-    "Best viewpoint near me?",
+    "Nearest nice viewpoint to me?",
+    "Plan me a fun hangout today",
     "Quiet café to study in Amman",
     "Camping spot for stargazing",
   ],
