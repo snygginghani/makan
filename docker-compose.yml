@@ -1,0 +1,36 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: makan-db
+    environment:
+      POSTGRES_USER: makan
+      POSTGRES_PASSWORD: makan
+      POSTGRES_DB: makan
+    ports:
+      - "5433:5432"
+    volumes:
+      - makan_pgdata:/var/lib/postgresql/data
+      - ./backend/db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U makan -d makan"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    container_name: makan-api
+    env_file:
+      - ./backend/.env.docker
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - makan_knowledge:/data/knowledge
+    profiles: ["full"]
+
+volumes:
+  makan_pgdata:
+  makan_knowledge:

@@ -1,0 +1,12 @@
+[project]
+name = "makan"
+version = "0.1.0"
+description = "Discover Jordan AI Map — AI-powered interactive map of Jordan with RAG-based place intelligence"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
